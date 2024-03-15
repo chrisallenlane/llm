@@ -1,0 +1,11 @@
+- README, CONTRIBUTING, LICENSE
+- Windows support
+- `session rewind`
+- accept key as config
+- database indeces (w/r/t `search`)
+- make `db destroy` require confirmation
+- model selection
+- sign up for v4 API key
+- tests
+- token constraints on API request
+- vim integration
