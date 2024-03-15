@@ -3,15 +3,24 @@ package openai
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 // APIError provides error information returned by the OpenAI API.
+// InnerError struct is only valid for Azure OpenAI Service.
 type APIError struct {
-	Code           any     `json:"code,omitempty"`
-	Message        string  `json:"message"`
-	Param          *string `json:"param,omitempty"`
-	Type           string  `json:"type"`
-	HTTPStatusCode int     `json:"-"`
+	Code           any         `json:"code,omitempty"`
+	Message        string      `json:"message"`
+	Param          *string     `json:"param,omitempty"`
+	Type           string      `json:"type"`
+	HTTPStatusCode int         `json:"-"`
+	InnerError     *InnerError `json:"innererror,omitempty"`
+}
+
+// InnerError Azure Content filtering. Only valid for Azure OpenAI Service.
+type InnerError struct {
+	Code                 string               `json:"code,omitempty"`
+	ContentFilterResults ContentFilterResults `json:"content_filter_result,omitempty"`
 }
 
 // RequestError provides informations about generic request errors.
@@ -25,6 +34,10 @@ type ErrorResponse struct {
 }
 
 func (e *APIError) Error() string {
+	if e.HTTPStatusCode > 0 {
+		return fmt.Sprintf("error, status code: %d, message: %s", e.HTTPStatusCode, e.Message)
+	}
+
 	return e.Message
 }
 
@@ -37,12 +50,30 @@ func (e *APIError) UnmarshalJSON(data []byte) (err error) {
 
 	err = json.Unmarshal(rawMap["message"], &e.Message)
 	if err != nil {
-		return
+		// If the parameter field of a function call is invalid as a JSON schema
+		// refs: https://github.com/sashabaranov/go-openai/issues/381
+		var messages []string
+		err = json.Unmarshal(rawMap["message"], &messages)
+		if err != nil {
+			return
+		}
+		e.Message = strings.Join(messages, ", ")
 	}
 
-	err = json.Unmarshal(rawMap["type"], &e.Type)
-	if err != nil {
-		return
+	// optional fields for azure openai
+	// refs: https://github.com/sashabaranov/go-openai/issues/343
+	if _, ok := rawMap["type"]; ok {
+		err = json.Unmarshal(rawMap["type"], &e.Type)
+		if err != nil {
+			return
+		}
+	}
+
+	if _, ok := rawMap["innererror"]; ok {
+		err = json.Unmarshal(rawMap["innererror"], &e.InnerError)
+		if err != nil {
+			return
+		}
 	}
 
 	// optional fields
@@ -70,10 +101,7 @@ func (e *APIError) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (e *RequestError) Error() string {
-	if e.Err != nil {
-		return e.Err.Error()
-	}
-	return fmt.Sprintf("status code %d", e.HTTPStatusCode)
+	return fmt.Sprintf("error, status code: %d, message: %s", e.HTTPStatusCode, e.Err)
 }
 
 func (e *RequestError) Unwrap() error {

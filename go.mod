@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/sashabaranov/go-openai v1.9.0
+	github.com/sashabaranov/go-openai v1.20.4
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
