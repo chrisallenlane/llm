@@ -13,7 +13,7 @@ require (
 	github.com/charmbracelet/glamour v0.6.0
 	github.com/mattn/go-isatty v0.0.18
 	gorm.io/driver/sqlite v1.5.0
-	gorm.io/gorm v1.25.1
+	gorm.io/gorm v1.25.7
 )
 
 require (
