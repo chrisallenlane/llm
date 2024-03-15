@@ -11,7 +11,7 @@ require (
 require (
 	github.com/briandowns/spinner v1.23.0
 	github.com/charmbracelet/glamour v0.6.0
-	github.com/mattn/go-isatty v0.0.18
+	github.com/mattn/go-isatty v0.0.20
 	gorm.io/driver/sqlite v1.5.0
 	gorm.io/gorm v1.25.1
 )
