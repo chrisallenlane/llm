@@ -26,6 +26,12 @@ Features
 4. Ability to "rewind" and "copy" sessions
 5. Ability to "stack" and batch messages
 
+Configuring
+-----------
+Export an `OPENAI_KEY` environment variable containing a valid API key:
+```sh
+export OPENAI_KEY=your-api-key
+```
 
 Usage
 -----
