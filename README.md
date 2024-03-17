@@ -60,7 +60,7 @@ $ llm q ask 'Please demonstrate how to install a package on Debian Linux.'
 Longer questions may be composed in your preferred editor:
 ```sh
 $ llm q ask
-# This will open $EDITOR or $VISUAL. Compose your question in the shell, then
-save the document. On write and close, the question will be sent to the OpenAI
-API.
+# This will open $EDITOR or $VISUAL. Compose your question in the shell,
+# then save the document. On write and close, the question will be sent
+# to the OpenAI API.
 ```
